@@ -51,7 +51,7 @@ mod tests {
     use solana_sdk::{client::SyncClient, genesis_config::create_genesis_config};
 
     #[test]
-    fn test_bank_client_new_with_keypairs() {
+    fn test_transfer() {
         let (genesis_config, mint) = create_genesis_config(1);
         let bank = Bank::new(&genesis_config);
         let bank_client = BankClient::new(bank);
