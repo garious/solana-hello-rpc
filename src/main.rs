@@ -8,7 +8,7 @@ use solana_sdk::{
 use std::fs::remove_dir_all;
 
 fn main() {
-    // Why doesn't this function accept the total supply as its only argument?
+    // Why doesn't this function accept a genesis config as its only argument?
     let validator = TestValidator::run();
 
     // Why are we creating a TCP connection to have the server send a UDP packet?
