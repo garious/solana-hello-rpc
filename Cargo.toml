@@ -12,3 +12,6 @@ homepage = "https://solana.com/"
 solana-client = {git = "https://github.com/solana-labs/solana", rev = "efb4988d108fa2f52c35d671a177d3b18db6c495"}
 solana-sdk = {git = "https://github.com/solana-labs/solana", rev = "efb4988d108fa2f52c35d671a177d3b18db6c495"}
 solana-core = {git = "https://github.com/solana-labs/solana", rev = "efb4988d108fa2f52c35d671a177d3b18db6c495"}
+
+[dev-dependencies]
+solana-runtime = {git = "https://github.com/solana-labs/solana", rev = "efb4988d108fa2f52c35d671a177d3b18db6c495"}

@@ -43,3 +43,21 @@ fn main() {
     validator.server.close().unwrap();
     remove_dir_all(validator.ledger_path).unwrap();
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use solana_runtime::{bank::Bank, bank_client::BankClient};
+    use solana_sdk::{client::SyncClient, genesis_config::create_genesis_config};
+
+    #[test]
+    fn test_bank_client_new_with_keypairs() {
+        let (genesis_config, mint) = create_genesis_config(1);
+        let bank = Bank::new(&genesis_config);
+        let bank_client = BankClient::new(bank);
+        let bob = Keypair::new();
+        let instruction = system_instruction::transfer(&mint.pubkey(), &bob.pubkey(), 1);
+        bank_client.send_instruction(&mint, instruction).unwrap();
+        assert_eq!(bank_client.get_balance(&bob.pubkey()).unwrap(), 1);
+    }
+}
