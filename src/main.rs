@@ -8,18 +8,36 @@ use solana_sdk::{
 use std::fs::remove_dir_all;
 
 fn main() {
+    // Why doesn't this function accept the total supply as its only argument?
     let validator = TestValidator::run();
+
+    // Why are we creating a TCP connection to have the server send a UDP packet?
     let rpc_client = RpcClient::new_socket(validator.leader_data.rpc);
 
     let bob = Keypair::new();
     let instruction = system_instruction::transfer(&validator.alice.pubkey(), &bob.pubkey(), 1);
-    let (blockhash, _fee_calculator) = rpc_client.get_recent_blockhash().unwrap();
-    let signers = vec![&validator.alice];
-    let mut transaction =
-        Transaction::new_signed_instructions(&signers, vec![instruction], blockhash);
-    rpc_client.send_transaction(&mut transaction).unwrap();
-    assert_ne!(rpc_client.get_balance(&bob.pubkey()).unwrap(), 0);
 
+    // Why must we get a blockhash and sign the transaction when the RPC client implements the
+    // same functionality to update the transaction when the blockhash expires?
+    let (blockhash, _fee_calculator) = rpc_client.get_recent_blockhash().unwrap();
+    let signers = [&validator.alice];
+
+    println!("Sending 1 lamport...");
+
+    // Why am I creating a Transaction and not handing the client an Instruction or Message,
+    // as we would with the Client trait?
+    let mut transaction = Transaction::new_signed_instructions(&signers, &[instruction], blockhash);
+
+    // Why isn't this an async function? If I want to send multiple transactions, I need to either
+    // wait for finality or use a different method that may behave differently (no spinner)?
+    rpc_client
+        .send_and_confirm_transaction_with_spinner(&mut transaction, &signers)
+        .unwrap();
+    assert_eq!(rpc_client.get_balance(&bob.pubkey()).unwrap(), 1);
+
+    println!("Success!");
+
+    // Why doesn't TestValidator implement Drop?
     validator.server.close().unwrap();
     remove_dir_all(validator.ledger_path).unwrap();
 }
