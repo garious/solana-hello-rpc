@@ -20,6 +20,8 @@ fn main() {
     // Why must we get a blockhash and sign the transaction when the RPC client implements the
     // same functionality to update the transaction when the blockhash expires?
     let (blockhash, _fee_calculator) = rpc_client.get_recent_blockhash().unwrap();
+
+    // Why alice and not mint_keypair?
     let signers = [&validator.alice];
 
     println!("Sending 1 lamport...");
